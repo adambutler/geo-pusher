@@ -48,7 +48,10 @@ angular.module "geoPusher"
       return true
 
     $scope.post = ->
-      $scope.onMessage($scope.message.body, $scope.position)
+      $scope.channel.trigger("client-message-event",
+        message: $scope.message.body,
+        position: $scope.getPositionToDegreeOfAccuracy()
+      )
 
     $scope.onMessage = (message, position) ->
       pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
