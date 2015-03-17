@@ -31,6 +31,11 @@ angular.module "geoPusher"
 
     map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions)
 
+    $scope.shouldShowNewMessageForm = ->
+      return false unless $scope.position?
+      return false unless $scope.state.pusherSubscription.active
+      return true
+
     $scope.post = ->
       $scope.onMessage($scope.message.body, $scope.position)
 
