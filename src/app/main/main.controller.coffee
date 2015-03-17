@@ -1,6 +1,22 @@
 angular.module "geoPusher"
-  .controller "MainCtrl", ($scope, $mdDialog) ->
+  .controller "MainCtrl", ($scope, $mdDialog, $pusher) ->
     $scope.message = {}
+    $scope.state = {
+      pusherSubscription: {
+        active: false
+      }
+    }
+
+    client = new Pusher "YOUR_APP_KEY", {
+      authEndpoint: "http://127.0.0.1:5000/pusher/auth"
+    }
+
+    pusher = $pusher(client)
+
+    $scope.channel = pusher.subscribe('private-channel')
+
+    $scope.channel.bind "pusher:subscription_succeeded", ->
+      $scope.state.pusherSubscription.active = true
 
     alert = $mdDialog.alert({
       title: 'Getting your location',

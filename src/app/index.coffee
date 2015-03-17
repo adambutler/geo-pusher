@@ -1,4 +1,4 @@
-angular.module "geoPusher", ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngResource', 'ui.router', 'ngMaterial']
+angular.module "geoPusher", ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngResource', 'ui.router', 'ngMaterial', 'pusher-angular']
   .config ($stateProvider, $urlRouterProvider) ->
     $stateProvider
       .state "home",
