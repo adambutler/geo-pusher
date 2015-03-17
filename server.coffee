@@ -17,6 +17,8 @@ pusher = new Pusher(
   secret: process.env.PUSHER_APP_SECRET
 )
 
+app.use('/', express.static('dist'))
+
 app.post "/pusher/auth", (req, res) ->
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
@@ -25,7 +27,6 @@ app.post "/pusher/auth", (req, res) ->
   channel = req.body.channel_name
   auth = pusher.authenticate(socketId, channel)
   res.send auth
-  return
 
 port = process.env.PORT or 5000
 app.listen port
