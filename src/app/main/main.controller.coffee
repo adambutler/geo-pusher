@@ -19,6 +19,8 @@ angular.module "geoPusher"
       $scope.channel.bind "pusher:subscription_succeeded", ->
         $scope.state.pusherSubscription.active = true
 
+      $scope.channel.bind "client-message-event", $scope.onMessage
+
     alert = $mdDialog.alert({
       title: 'Getting your location',
       content: 'You may need to allow GeoLocation. Hit accept at the top of your screen.'
@@ -53,12 +55,13 @@ angular.module "geoPusher"
         position: $scope.getPositionToDegreeOfAccuracy()
       )
 
-    $scope.onMessage = (message, position) ->
-      pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+    $scope.onMessage = (data) ->
+      console.log data
+      position = new google.maps.LatLng(data.position.latitude, data.position.longitude)
       infowindow = new google.maps.InfoWindow(
         map: map
-        position: pos
-        content: message
+        position: position
+        content: data.message
       )
 
     if navigator.geolocation
