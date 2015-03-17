@@ -27,10 +27,10 @@ angular.module "geoPusher"
     })
 
     mapOptions =
-      zoom: 8
+      zoom: 14
       center:
-        lat: -34.397
-        lng: 150.644
+        lat: 51.536208,
+        lng: -0.07873
 
     map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions)
 
@@ -73,4 +73,3 @@ angular.module "geoPusher"
 
         pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
         map.setCenter pos
-        map.setZoom 14
