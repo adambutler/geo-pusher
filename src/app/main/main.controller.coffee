@@ -13,10 +13,11 @@ angular.module "geoPusher"
 
     pusher = $pusher(client)
 
-    $scope.channel = pusher.subscribe('private-channel')
+    $scope.subscribeToLocalRoom = ->
+      $scope.channel = pusher.subscribe("private-location-#{$scope.roomName()}")
 
-    $scope.channel.bind "pusher:subscription_succeeded", ->
-      $scope.state.pusherSubscription.active = true
+      $scope.channel.bind "pusher:subscription_succeeded", ->
+        $scope.state.pusherSubscription.active = true
 
     alert = $mdDialog.alert({
       title: 'Getting your location',
@@ -30,6 +31,16 @@ angular.module "geoPusher"
         lng: 150.644
 
     map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions)
+
+    $scope.getPositionToDegreeOfAccuracy = (accuracy = 2) ->
+      {
+        latitude: $scope.position.coords.latitude.toFixed(accuracy)
+        longitude: $scope.position.coords.longitude.toFixed(accuracy)
+      }
+
+    $scope.roomName = ->
+      position = $scope.getPositionToDegreeOfAccuracy(1)
+      "#{position.latitude}#{position.longitude}"
 
     $scope.shouldShowNewMessageForm = ->
       return false unless $scope.position?
@@ -52,6 +63,8 @@ angular.module "geoPusher"
       navigator.geolocation.getCurrentPosition (position) ->
         $scope.position = position
         $mdDialog.hide()
+        $scope.subscribeToLocalRoom()
+
         pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
         map.setCenter pos
         map.setZoom 14
