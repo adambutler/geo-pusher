@@ -1,1 +1,11 @@
 <div id="map-canvas"></div>
+
+<md-card class="form" ng-show="position">
+  <md-card-content>
+    <md-input-container flex>
+      <label>Message</label>
+      <textarea ng-model="message.body" columns="1" md-maxlength="150"></textarea>
+    </md-input-container>
+    <md-button class="align-right" ng-click="post()">Send</md-button>
+  </md-card-content>
+</md-card>
