@@ -1,7 +1,48 @@
 html, body, #map-canvas, [ui-view] { height: 100%; margin: 0; padding: 0;}
 
+header {
+  position: relative;
+  background: url("/assets/images/header.png");
+  background-size: cover;
+  min-height: 600px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: rgba(#1b557a, 0.6);
+  }
+
+  h1 {
+    position: relative;
+    color: #fff;
+    font-size: 3em;
+    max-width: 720px;
+  }
+}
+
+hr {
+  border: none;
+  border-top: 2px solid #eee;
+}
+
+.container {
+  padding: 20px;
+  max-width: 100%;
+  width: 860px;
+  margin: 0 auto;
+}
+
 .align-right {
   float: right;
+}
+
+.text--centered {
+  text-align: center;
 }
 
 .form {

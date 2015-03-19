@@ -7,7 +7,7 @@ angular.module "geoPusher"
       }
     }
 
-    client = new Pusher "YOUR_APP_KEY", {
+    client = new Pusher "d69b688d95bbabd3787d", {
       authEndpoint: "http://127.0.0.1:5000/pusher/auth"
     }
 
