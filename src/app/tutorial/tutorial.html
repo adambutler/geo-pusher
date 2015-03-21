@@ -1,0 +1,51 @@
+<header>
+  <h1>Building a location aware realtime chat with AngularJS & Pusher</h1>
+</header>
+<div class="container">
+  <div class="text--centered">
+    <h2>
+      In this guide you will learn how to build an AngularJS application that allows realtime communication between people nearby.
+    </h2>
+    <a class="md-primary md-button md-default-theme" ui-sref="home">Check out the demo</a>
+  </div>
+  <br>
+  <hr>
+  <h2>Preface</h2>
+  <p>
+    This tutorial assumes basic HTML, CSS and JavaScript ability as well as familiarity with Git. If you are not familiar with these I recommed following these tutorials first -
+    <ul>
+      <li>
+        <p>
+          <a href="http://www.codecademy.com/en/tracks/web">HTML/CSS - Code Academy</a>
+        </p>
+      </li>
+      <li>
+        <p>
+          <a href="https://try.github.io/levels/1/challenges/1">Git - tryGit</a>
+        </p>
+      </li>
+    </ul>
+  </p>
+  <h2>Introduction</h2>
+  <p>Communication application are everywhere, whether your tweeting, snapchatting or even meerkatting these tools all require you to be connected to the person your subscribed to.</p>
+  <p>But what if you were instead connected by your physical location. Localised information becomes more relivant and communities, particularly in dense areas such as a university grounds, would form organically.</p>
+  <p>In this guide we're going to learn how to build such an application using AnguarJS and Pusher, by creating location specific channels that utilise client events. Most of the work will be on the client-side leaving only the authentication layer to build in Express.js.</p>
+  <p>Here's an outline of the flow -</p>
+  <ul>
+    <li>
+      <p>The user lands on the Application and we request their GeoLocation, with a friendly notice to let them know the status.</p>
+    </li>
+    <li>
+      <p>Once we have their location we generate a channel name based on a low precision lookup of their location.</p>
+    </li>
+    <li>
+      <p>Using the Pusher Angular library we subscribe to the private location channel authenticating the user in doing so.</p>
+    </li>
+    <li>
+      <p>We listen for message events on the channel and push them to a full screen map near the location they occurred.</p>
+    </li>
+  </ul>
+  <h2>Setup</h2>
+  Lets start by getting the application bootstrapped.
+  <code><pre>$ git clone -b starter git@github.com:adambutler/geo-pusher.git</pre></code>
+</div>
