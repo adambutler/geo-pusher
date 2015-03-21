@@ -47,5 +47,26 @@
   </ul>
   <h2>Setup</h2>
   Lets start by getting the application bootstrapped.
-  <code><pre>$ git clone -b starter git@github.com:adambutler/geo-pusher.git</pre></code>
+
+  <div hljs language="bash" include="'/app/tutorial/partials/01-download.sh'"></div>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      JavaScript
+    </md-tab>
+    <md-tab id="tab2" aria-controls="tab2-content">
+      CoffeeScript
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript" include="'/app/tutorial/partials/test.js.example'"></div>
+    </div>
+    <div role="tabpanel" id="tab2-content" aria-labelledby="tab2" ng-switch-when="1" >
+      <div hljs language="javascript" include="'/app/tutorial/partials/test.coffee.example'"></div>
+    </div>
+  </ng-switch>
+
 </div>
+
+
