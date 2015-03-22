@@ -27,9 +27,9 @@
     </ul>
   </p>
   <h2>Introduction</h2>
-  <p>Communication application are everywhere, whether your tweeting, snapchatting or even meerkatting these tools all require you to be connected to the person your subscribed to.</p>
-  <p>But what if you were instead connected by your physical location. Localised information becomes more relivant and communities, particularly in dense areas such as a university grounds, would form organically.</p>
-  <p>In this guide we're going to learn how to build such an application using AnguarJS and Pusher, by creating location specific channels that utilise client events. Most of the work will be on the client-side leaving only the authentication layer to build in Express.js.</p>
+  <p>Communication applications are everywhere, whether your tweeting, snapchatting or even meerkatting these tools all require you to be connected to the person you're following/friends-with/subscribed-to.</p>
+  <p>But what if you were instead connected by your physical location. Localised information becomes more relevant and communities, particularly in dense areas such as a university grounds, would form organically.</p>
+  <p>In this guide we're going to learn how to build such an application using AngularJS and Pusher, by creating location specific channels that utilise client events. Most of the work will be on the client-side leaving only the authentication layer to build in Express.js.</p>
   <p>Here's an outline of the flow -</p>
   <ul>
     <li>
@@ -39,7 +39,7 @@
       <p>Once we have their location we generate a channel name based on a low precision lookup of their location.</p>
     </li>
     <li>
-      <p>Using the Pusher Angular library we subscribe to the private location channel authenticating the user in doing so.</p>
+      <p>Using the Pusher Angular library we subscribe to the private location channel, authenticating the user in doing so.</p>
     </li>
     <li>
       <p>We listen for message events on the channel and push them to a full screen map near the location they occurred.</p>
@@ -68,5 +68,3 @@
   </ng-switch>
 
 </div>
-
-
