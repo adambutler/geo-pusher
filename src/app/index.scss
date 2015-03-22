@@ -52,4 +52,10 @@ hr {
   right: 30px;
   width: 60%;
   min-width: 600px;
+
+  @media all and (max-width: 670px) {
+    right: 0; bottom: 0; left: 0;
+    width: auto;
+    min-width: 0px;
+  }
 }
