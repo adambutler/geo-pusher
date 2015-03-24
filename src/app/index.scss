@@ -22,6 +22,11 @@ header {
     color: #fff;
     font-size: 3em;
     max-width: 720px;
+
+    @media all and (max-width: 670px) {
+      font-size: 2em;
+      padding: 0 20px;
+    }
   }
 }
 
