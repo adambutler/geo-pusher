@@ -7,7 +7,9 @@ angular.module "geoPusher"
       }
     }
 
-    client = new Pusher "d69b688d95bbabd3787d", {
+    # Do not change PUSHER_APP_KEY this will be injected
+    # automagically from the .env file
+    client = new Pusher "PUSHER_APP_KEY", {
       authEndpoint: "http://127.0.0.1:5000/pusher/auth"
     }
 
