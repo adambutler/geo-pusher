@@ -12,7 +12,7 @@
   <hr>
   <h2>Preface</h2>
   <p>
-    This tutorial assumes basic HTML, CSS and JavaScript ability as well as familiarity with Git. If you are not familiar with these I recommed following these tutorials first -
+    This tutorial assumes basic HTML, CSS and JavaScript ability as well as familiarity with Git. If you are not familiar with these I recommend following these tutorials first -
     <ul>
       <li>
         <p>
@@ -28,7 +28,7 @@
   </p>
   <h2>Introduction</h2>
   <p>Communication application are everywhere, whether your tweeting, snapchatting or even meerkatting these tools all require you to be connected to the person your subscribed to.</p>
-  <p>But what if you were instead connected by your physical location. Localised information becomes more relivant and communities, particularly in dense areas such as a university grounds, would form organically.</p>
+  <p>But what if you were instead connected by your physical location. Localised information becomes more relevant and communities, particularly in dense areas such as a university grounds, would form organically.</p>
   <p>In this guide we're going to learn how to build such an application using AnguarJS and Pusher, by creating location specific channels that utilise client events. Most of the work will be on the client-side leaving only the authentication layer to build in Express.js.</p>
   <p>Here's an outline of the flow -</p>
   <ul>
@@ -46,26 +46,34 @@
     </li>
   </ul>
   <h2>Setup</h2>
-  Lets start by getting the application bootstrapped.
+  <p>Lets start by getting the application bootstrapped. By cloning this repo you'll be setup with an empty AngularJS project served by Node express.</p>
 
   <div hljs language="bash" include="'/app/tutorial/partials/01-download.sh'"></div>
 
-  <md-tabs class="md-accent" md-selected="data.selectedIndex">
-    <md-tab id="tab1" aria-controls="tab1-content">
-      JavaScript
-    </md-tab>
-    <md-tab id="tab2" aria-controls="tab2-content">
-      CoffeeScript
-    </md-tab>
-  </md-tabs>
-  <ng-switch on="data.selectedIndex" class="tabpanel-container">
-    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
-      <div hljs language="javascript" include="'/app/tutorial/partials/test.js.example'"></div>
-    </div>
-    <div role="tabpanel" id="tab2-content" aria-labelledby="tab2" ng-switch-when="1" >
-      <div hljs language="javascript" include="'/app/tutorial/partials/test.coffee.example'"></div>
-    </div>
-  </ng-switch>
+  <p>Great... lets checkout what we've got!</p>
+
+  <blockquote>
+    <h3><pre><code class="hljs">/src/app/index.js</code></pre></h3>
+    <p>
+      This is where the <a href="https://docs.angularjs.org/guide/module" target="_blank">Angular module</a> is defined &amp; where we list our application routes.
+    </p>
+  </blockquote>
+
+  <blockquote>
+    <h3><pre><code class="hljs">/src/app/main/main.controller.js</code></pre></h3>
+    <p>
+      This is our main <a href="https://docs.angularjs.org/guide/controller" target="_blank">controller</a> we'll use this file to control what happens in our view.
+    </p>
+  </blockquote>
+
+  <blockquote>
+    <h3><pre><code class="hljs">/src/app/main/main.html</code></pre></h3>
+    <p>
+      This is our main view. We'll use this file to show the map and a form so the user can post up their own messages.
+    </p>
+  </blockquote>
+
+
 
 </div>
 
