@@ -2,7 +2,12 @@
 
 var gulp = require('gulp');
 var env = require('node-env-file');
-env(".env");
+
+try {
+  env(__dirname + "/.env");
+} catch (_error) {
+  console.log(_error);
+}
 
 var paths = gulp.paths;
 
