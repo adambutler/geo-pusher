@@ -70,3 +70,18 @@ blockquote {
   padding-left: 10px;
   border-left: 4px solid #ff4081;
 }
+
+img {
+  max-width: 100%;
+}
+
+.preview {
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 3px;
+  border: 1px solid #eee;
+}
+
+li {
+  margin-bottom: 10px;
+}
