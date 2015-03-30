@@ -76,6 +76,7 @@ img {
 }
 
 .preview {
+  cursor: pointer;
   border-radius: 4px;
   overflow: hidden;
   padding: 3px;
@@ -84,4 +85,10 @@ img {
 
 li {
   margin-bottom: 10px;
+}
+
+.loading {
+  background-image: url("/assets/images/loading.gif");
+  background-position: center center;
+  background-size: 100%;
 }

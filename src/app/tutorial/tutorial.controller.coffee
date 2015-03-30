@@ -5,7 +5,7 @@ angular.module "geoPusher"
       parentEl = angular.element(document.body)
       $mdDialog.show
         template: """<md-dialog aria-label="List dialog">
-           <md-content>
+           <md-content class="loading">
              <img src="#{imageURL}">
            </md-content>
          </md-dialog>
