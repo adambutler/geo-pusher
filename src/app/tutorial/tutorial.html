@@ -47,8 +47,12 @@
   <h3>Setup</h3>
   <p>Lets start by getting the application bootstrapped. By cloning this repo you'll be setup with an empty AngularJS project served by Node express.</p>
 
-  <div hljs language="bash"># Note: not yet setup
-git clone -b starter git@github.com:adambutler/geo-pusher.git</div>
+  <div hljs language="bash">
+
+# Note: not yet setup
+git clone -b starter git@github.com:adambutler/geo-pusher.git
+
+</div>
 
   <p>Great... lets checkout what we've got!</p>
 
@@ -130,7 +134,84 @@ git clone -b starter git@github.com:adambutler/geo-pusher.git</div>
   </ol>
 
   <h3>Adding Google Maps</h3>
-  <p>To Do</p>
+
+  <p>First of all we need to add Google Maps to our application. Google provide the JavaScript that we’ll need to include in the <code>&lt;head&gt;</code> of our site.</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/index.html
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="html">
+
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}"></script>
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Don’t worry about changing the <code>GOOGLE_API_KEY</code> block this will get injected when we the page</p>
+
+  <p>We also need a container to render the map to.</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.html
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="html">
+
+<div id="map-canvas"></div>
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>We're going to initiate the map with the following options -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+var mapOptions = {
+  zoom: 14,
+  center: {
+    lat: 51.536208,
+    lng: -0.07873
+  }
+};
+
+var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Finally we want to make sure we’re using all of the available space in the browser window so we’ll set the following css –</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/index.scss
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="css">
+
+#map-canvas {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+      </div>
+    </div>
+  </ng-switch>
 
   <h3>Getting GeoLocation</h3>
   <p>To Do</p>
