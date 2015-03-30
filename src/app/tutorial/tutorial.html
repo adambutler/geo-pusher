@@ -10,19 +10,12 @@
   </div>
   <br>
   <hr>
-  <h2>Preface</h2>
-  <p>
-    This tutorial assumes basic HTML, CSS and JavaScript ability as well as familiarity with Git. If you are not familiar with these I recommend following these tutorials first -
-    <ul>
-      <li><a href="http://www.codecademy.com/en/tracks/web">HTML/CSS - Code Academy</a>
-      </li>
-      <li><a href="https://try.github.io/levels/1/challenges/1">Git - tryGit</a></li>
-    </ul>
-  </p>
-  <h2>Introduction</h2>
-  <p>Communication application are everywhere, whether your tweeting, snapchatting or even meerkatting these tools all require you to be connected to the person your subscribed to.</p>
-  <p>But what if you were instead connected by your physical location. Localised information becomes more relevant and communities, particularly in dense areas such as a university grounds, would form organically. Realtime conversations could spawn based on events happening at the present and messages could spread virally outwards from a single location.</p>
-  <p>In this guide we're going to learn how to build such an application using AnguarJS and Pusher, we'll do this by creating location specific channels that utilise client events for sending an receiving messages. Most of the work will be on the client-side leaving only the authentication layer to build in Express.js. The user lands on the Application and we request their GeoLocation, alongside a friendly notice to let them know the status.</p>
+  <p>Communication applications are everywhere, whether you're tweeting, snapchatting or even meerkatting these tools all require you to be connected to the person you're subscribed to.</p>
+  <p>But what if you were instead connected by your physical location? Localised information becomes more relevant and communities, particularly in dense areas such as a university grounds, would form organically. Realtime conversations could spawn based on events happening at the present and messages could spread virally outwards from a single location.</p>
+  <p>In this tutorial we're going to learn how to build such an application using AngularJS and Pusher. We'll do this by creating location specific <a href="https://pusher.com/docs/client_api_guide/client_private_channels">channels</a> that utilise <a href="https://pusher.com/docs/client_api_guide/client_events">client events</a> for sending and receiving messages. Most of the work will be on the client-side leaving only Express.js to serve files and <a href="https://pusher.com/docs/authenticating_users">authenticate users</a>.</p>
+
+  <h2>Tutorial</h2>
+
   <p>Here's an outline of the flow -</p>
   <ul>
     <li>
@@ -39,9 +32,19 @@
     </li>
   </ul>
 
-  <p>Before we move on you might want to <a ui-sref="home">check out the demo</a> &amp; if you get stuck at any point you can always refer to the <a href="http://github.com/adambutler/geo-pusher">completed code</a>.</p>
+  <p>Remember at any time you can <a ui-sref="home">check out the demo</a> and if you get stuck at any point you can always refer to the <a href="http://github.com/adambutler/geo-pusher">completed code</a>.</p>
 
-  <h2>Setup</h2>
+  <h3>Preface</h3>
+  <p>
+    This tutorial assumes basic HTML, CSS and JavaScript ability as well as familiarity with Git. If you are not familiar with these I recommend following these tutorials first -
+    <ul>
+      <li><a href="http://www.codecademy.com/en/tracks/web">HTML/CSS - Code Academy</a>
+      </li>
+      <li><a href="https://try.github.io/levels/1/challenges/1">Git - tryGit</a></li>
+    </ul>
+  </p>
+
+  <h3>Setup</h3>
   <p>Lets start by getting the application bootstrapped. By cloning this repo you'll be setup with an empty AngularJS project served by Node express.</p>
 
   <div hljs language="bash"># Note: not yet setup
@@ -70,7 +73,7 @@ git clone -b starter git@github.com:adambutler/geo-pusher.git</div>
     </p>
   </blockquote>
 
-  <h3>Setting up the Pusher app</h3>
+  <h4>Setting up the Pusher app</h4>
 
   <p>We need to setup our Pusher app to allow us to authenticate users as well as send &amp; receive messages.</p>
 
@@ -91,7 +94,7 @@ git clone -b starter git@github.com:adambutler/geo-pusher.git</div>
     </md-item-content>
   </md-item>
 
-  <h3>Setting up the Google developer project</h3>
+  <h4>Setting up the Google developer project</h4>
 
   <p>Google keep tight control over who used their API, we therefor need to get a key to use the Google Maps JavaScript API from the developer console.</p>
 
@@ -117,7 +120,7 @@ git clone -b starter git@github.com:adambutler/geo-pusher.git</div>
     </md-item-content>
   </md-item>
 
-  <h3>Setting up the environment file</h3>
+  <h4>Setting up the environment file</h4>
 
   <p>We use these keys in a few places and you should avoid committing them into source control. We'll add these keys into an environment file that gets referenced in various parts of the app.</p>
 
@@ -126,22 +129,19 @@ git clone -b starter git@github.com:adambutler/geo-pusher.git</div>
     <li>Edit the new <code>.env</code> file by populating the values with the ones you have taken notes of.</li>
   </ol>
 
-  <h2>Adding Google Maps</h2>
+  <h3>Adding Google Maps</h3>
   <p>To Do</p>
 
-  <h2>Getting GeoLocaion</h2>
+  <h3>Getting GeoLocation</h3>
   <p>To Do</p>
 
-  <h2>Receiving messages</h2>
+  <h3>Receiving events</h3>
   <p>To Do</p>
 
-  <h2>Sending messages</h2>
+  <h3>Sending events</h3>
   <p>To Do</p>
 
-  <h2>Getting GeoLocaion</h2>
-  <p>To Do</p>
-
-  <h2>Conclusion</h2>
+  <h3>Conclusion</h3>
   <p>To Do</p>
 </div>
 
