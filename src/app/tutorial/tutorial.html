@@ -234,7 +234,37 @@ $ gulp serve
   <img src="/assets/images/screenshots/01-google-maps.png">
 
   <h3>Getting GeoLocation</h3>
-  <p>To Do</p>
+  <p>Next up we need to get the users location to do this we will use the GeoLocation API which is well supported across most devices and browsers. The <code>getCurrentPosition</code> method will provide us with the latitude and longitude which we’ll use to set the map location.</p>
+
+  <p>It sometime takes a few seconds to get the location so it's a good idea to let the user know something is happening in the meantime. To do this we'll use an alert which is shown on load and then will be hidden once the location is known.</p>
+
+  <p>Add this code to the end of the controller body -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+alert = $mdDialog.alert({
+  title: 'Getting your location',
+  content: 'You may need to allow GeoLocation. Hit accept at the top of your screen.'
+});
+
+$mdDialog.show(alert);
+
+navigator.geolocation.getCurrentPosition(function(position) {
+  $scope.position = position;
+  latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  map.setCenter(pos);
+  $mdDialog.hide();
+});
+      </div>
+    </div>
+  </ng-switch>
 
   <h3>Receiving events</h3>
   <p>To Do</p>
