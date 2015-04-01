@@ -414,7 +414,95 @@ $scope.subscribeToLocalRoom = function(){
   </ng-switch>
 
   <h3>Sending events</h3>
-  <p>To Do</p>
+
+  <p>All that’s left to do is to let users post up their messages, lets start out with the script -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+$scope.message = {};
+
+$scope.shouldShowNewMessageForm = function() {
+  if ($scope.state.pusherSubscription.active) {
+    return false;
+  }
+  return true;
+};
+
+$scope.post = function() {
+  $scope.channel.trigger("client-message-event", {
+    message: $scope.message.body,
+    position: $scope.getPositionToDegreeOfAccuracy()
+  });
+};
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Next we'll create the HTML form -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.html
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="html">
+
+<md-card class="form" ng-show="shouldShowNewMessageForm()">
+  <md-card-content>
+    <md-input-container flex>
+      <label>Message</label>
+      <textarea ng-model="message.body" columns="1" md-maxlength="150"></textarea>
+    </md-input-container>
+    <md-button class="align-right" ng-click="post()">Send</md-button>
+  </md-card-content>
+</md-card>
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>The very last thing to do is to position the form in the bottom right corner -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/index.scss
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="css">
+
+.form {
+  background: #fff;
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 60%;
+  min-width: 600px;
+
+  @media all and (max-width: 670px) {
+    right: 0; bottom: 0; left: 0;
+    width: auto;
+    min-width: 0px;
+  }
+}
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>If you've done everything right it should look something like this -</p>
+
+  <img src="/assets/images/screenshots/02-final.png">
+
+  <p>If your code isn't running correctly you can refer to the <a href="http://github.com/adambutler/geo-pusher">final code</a>.</p>
 
   <h3>Conclusion</h3>
   <p>To Do</p>
