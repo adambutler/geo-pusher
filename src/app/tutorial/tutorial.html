@@ -266,6 +266,37 @@ navigator.geolocation.getCurrentPosition(function(position) {
     </div>
   </ng-switch>
 
+  <p>Messages are only going to be available to people who are nearby. A simple way to do this is to use a channel name that contains the geolocation This channel name should be the same for everybody nearby and is unique to the location. The latitude and longitude values are numbers so we can simply round these numbers to one decimal point, making the closest distance between two points about 11km.</p>
+
+  <p>Later on we’ll also want to show messages near to the actors location but for safety we should conceal their exact location. Since we need this functionality in two places we’ll abstract it into a method so we can use it for both, this will also give you the flexibility to adjust the distance to your preference.</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+$scope.getPositionToDegreeOfAccuracy = function(accuracy) {
+  return {
+    latitude: $scope.position.coords.latitude.toFixed(accuracy),
+    longitude: $scope.position.coords.longitude.toFixed(accuracy)
+  };
+};
+
+$scope.channelName = function() {
+  var position = $scope.getPositionToDegreeOfAccuracy(1);
+  return "" + position.latitude + position.longitude;
+};
+      </div>
+    </div>
+  </ng-switch>
+
+
+
+
   <h3>Receiving events</h3>
   <p>To Do</p>
 
