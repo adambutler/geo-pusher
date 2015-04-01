@@ -266,7 +266,7 @@ navigator.geolocation.getCurrentPosition(function(position) {
     </div>
   </ng-switch>
 
-  <p>Messages are only going to be available to people who are nearby. A simple way to do this is to use a channel name that contains the geolocation This channel name should be the same for everybody nearby and is unique to the location. The latitude and longitude values are numbers so we can simply round these numbers to one decimal point, making the closest distance between two points about 11km.</p>
+  <p>Messages are only going to be available to people who are nearby. A simple way to do this is to use a channel name that contains the geolocation. This channel name should be the same for everybody nearby and is unique to the location. The latitude and longitude values are numbers so we can simply round these numbers to one decimal point, making the closest distance between two points about 11km.</p>
 
   <p>Later on we’ll also want to show messages near to the actors location but for safety we should conceal their exact location. Since we need this functionality in two places we’ll abstract it into a method so we can use it for both, this will also give you the flexibility to adjust the distance to your preference.</p>
 
@@ -294,11 +294,124 @@ $scope.channelName = function() {
     </div>
   </ng-switch>
 
-
-
-
   <h3>Receiving events</h3>
-  <p>To Do</p>
+  <p>Next up we’re going to setup the functionality to receive events. Since the events are going to be coming from users instead of a server we’ll be using private channels. This requires us to authenticate users, which we’ll do with Express.js.</p>
+
+  <p>To start we’ll write the client side connection - </p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+var client = new Pusher("{{ PUSHER_APP_KEY }}", {
+authEndpoint: "{{ HOST_NAME }}/pusher/auth"
+});
+
+var pusher = $pusher(client);
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>On the server side we’ll keep things simple by unconditionally accepting clients.</p>
+
+  <p>Add the following route -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /server.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+app.post("/pusher/auth", function(req, res) {
+  var socketId = req.body.socket_id;
+  var channel = req.body.channel_name;
+  var auth = pusher.authenticate(socketId, channel);
+  res.send(auth);
+});
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Now launch the server -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      Terminal
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+node index.js
+      </div>
+    </div>
+  </ng-switch>
+
+
+  <p>Now we’re all setup to be able to receive events in the call to getCurrentPosition lets create a method called subscribeToLocalRoom and call it once the location is known.</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      Terminal
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+navigator.geolocation.getCurrentPosition(function(position){
+  // code from the last section
+  $scope.subscribeToLocalRoom();
+});
+
+$scope.subscribeToLocalRoom = function(){
+  // to do
+}
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>The subscribeToLocalRoom method is going to be handling incoming events and adding them to the map -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+$scope.subscribeToLocalRoom = function(){
+  $scope.channel = pusher.subscribe("private-location-" + $scope.roomName());
+
+  $scope.channel.bind("pusher:subscription_succeeded", function(){
+    $scope.state.pusherSubscription.active = true;
+  });
+
+  $scope.onMessage = function(data) {
+    var position = new google.maps.LatLng(data.position.latitude, data.position.longitude);
+    var infowindow = new google.maps.InfoWindow({
+      map: map,
+      position: position,
+      content: data.message
+    });
+  };
+
+  $scope.channel.bind("client-message-event", $scope.onMessage);
+};
+      </div>
+    </div>
+  </ng-switch>
 
   <h3>Sending events</h3>
   <p>To Do</p>
