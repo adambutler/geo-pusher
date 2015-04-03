@@ -259,7 +259,7 @@ $mdDialog.show(alert);
 navigator.geolocation.getCurrentPosition(function(position) {
   $scope.position = position;
   latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-  map.setCenter(pos);
+  map.setCenter(latLng);
   $mdDialog.hide();
 });
       </div>
@@ -400,7 +400,7 @@ $scope.subscribeToLocalRoom = function(){
 
   $scope.onMessage = function(data) {
     var position = new google.maps.LatLng(data.position.latitude, data.position.longitude);
-    var infowindow = new google.maps.InfoWindow({
+    new google.maps.InfoWindow({
       map: map,
       position: position,
       content: data.message
@@ -429,10 +429,7 @@ $scope.subscribeToLocalRoom = function(){
 $scope.message = {};
 
 $scope.shouldShowNewMessageForm = function() {
-  if ($scope.state.pusherSubscription.active) {
-    return false;
-  }
-  return true;
+  return $scope.state.pusherSubscription.active
 };
 
 $scope.post = function() {
