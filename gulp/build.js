@@ -2,6 +2,14 @@
 
 var gulp = require('gulp');
 
+var env = require('node-env-file');
+
+try {
+  env(".env");
+} catch (_error) {
+  console.log(_error);
+}
+
 var paths = gulp.paths;
 
 var $ = require('gulp-load-plugins')({
@@ -39,11 +47,11 @@ gulp.task('html', ['inject', 'partials'], function () {
 
   return gulp.src(paths.tmp + '/serve/*.html')
     .pipe($.inject(partialsInjectFile, partialsInjectOptions))
+    .pipe($.replace('{{ GOOGLE_API_KEY }}', process.env.GOOGLE_API_KEY))
     .pipe(assets = $.useref.assets())
     .pipe($.rev())
     .pipe(jsFilter)
     .pipe($.ngAnnotate())
-    .pipe($.uglify({preserveComments: $.uglifySaveLicense}))
     .pipe(jsFilter.restore())
     .pipe(cssFilter)
     .pipe($.csso())
