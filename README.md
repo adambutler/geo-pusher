@@ -1,6 +1,6 @@
 # GeoPusher
 
-A location aware chat application that uses [Pusher](http://pusher.com).
+Building a location aware realtime chat application with [AngularJS](https://angular.io/) & [Pusher](http://pusher.com)
 
 ![A gifcast showing sending a test message from one browser to another, it appears on a map of the connected browser at the location that it was sent from.](https://cloud.githubusercontent.com/assets/1238468/6698098/a32176ce-cced-11e4-9dbb-4b07169669f0.gif)
 

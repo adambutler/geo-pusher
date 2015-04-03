@@ -1,0 +1,542 @@
+<header>
+  <h1>Building a location aware realtime chat application with AngularJS &amp; Pusher</h1>
+</header>
+<div class="container">
+  <div class="text--centered">
+    <h2>
+      In this guide you will learn how to build an AngularJS application that allows realtime communication between people nearby.
+    </h2>
+    <a class="md-primary md-button md-default-theme" ui-sref="home">Check out the demo</a>
+  </div>
+  <br>
+  <hr>
+  <p>Communication applications are everywhere, whether you're tweeting, snapchatting or even meerkatting these tools all require you to be connected to the person you're subscribed to.</p>
+  <p>But what if you were instead connected by your physical location? Localised information becomes more relevant and communities, particularly in dense areas such as a university grounds, would form organically. Realtime conversations could spawn based on events happening at the present and messages could spread virally outwards from a single location.</p>
+  <p>In this tutorial we're going to learn how to build such an application using AngularJS and Pusher. Angular provides great flexibility for creating real-time web applications and Pusher gives us the power to broadcast and receive messages without having to manage infrastructure. We'll do this by creating location specific <a href="https://pusher.com/docs/client_api_guide/client_private_channels">channels</a> that utilise <a href="https://pusher.com/docs/client_api_guide/client_events">client events</a> for sending and receiving messages. Most of the work will be on the client-side leaving only Express.js to serve files and <a href="https://pusher.com/docs/authenticating_users">authenticate users</a>.</p>
+
+  <h2>Tutorial</h2>
+
+  <p>Here's an outline of the flow -</p>
+  <ul>
+    <li>
+      <p>The user lands on the Application and we request their GeoLocation, alongside a friendly notice to let them know the status.</p>
+    </li>
+    <li>
+      <p>Once we have the users location we generate a channel name based on a low precision lookup of their location. This room name will be the same for people who are near their location.</p>
+    </li>
+    <li>
+      <p>Using the Pusher Angular library we subscribe to the private location channel authenticating the user with node Express.js in doing so.</p>
+    </li>
+    <li>
+      <p>We then listen for message events on the channel and push them to a full screen map near the location they were published.</p>
+    </li>
+  </ul>
+
+  <p>Remember at any time you can <a ui-sref="home">check out the demo</a> and if you get stuck at any point you can always refer to the <a href="http://github.com/adambutler/geo-pusher">completed code</a>.</p>
+
+  <h3>Preface</h3>
+  <p>
+    This tutorial assumes basic HTML, CSS and JavaScript ability as well as familiarity with Git. If you are not familiar with these I recommend following these tutorials first -
+    <ul>
+      <li><a href="http://www.codecademy.com/en/tracks/web">HTML/CSS - Code Academy</a>
+      </li>
+      <li><a href="https://try.github.io/levels/1/challenges/1">Git - tryGit</a></li>
+    </ul>
+  </p>
+
+  <h3>Setup</h3>
+  <p>Lets start by getting the application bootstrapped. By cloning this repo you'll be setup with an empty AngularJS project served by Node express.</p>
+
+  <div hljs language="bash">
+
+# Note: not yet setup
+git clone -b starter git@github.com:adambutler/geo-pusher.git
+
+</div>
+
+  <p>Great... lets checkout what we've got!</p>
+
+  <blockquote>
+    <h3><pre><code class="hljs">/src/app/index.js</code></pre></h3>
+    <p>
+      This is where the <a href="https://docs.angularjs.org/guide/module" target="_blank">Angular module</a> is defined &amp; where we list our application routes.
+    </p>
+  </blockquote>
+
+  <blockquote>
+    <h3><pre><code class="hljs">/src/app/main/main.controller.js</code></pre></h3>
+    <p>
+      This is our main <a href="https://docs.angularjs.org/guide/controller" target="_blank">controller</a> we'll use this file to control what happens in our view.
+    </p>
+  </blockquote>
+
+  <blockquote>
+    <h3><pre><code class="hljs">/src/app/main/main.html</code></pre></h3>
+    <p>
+      This is our main view. We'll use this file to show the map and a form so the user can post up their own messages.
+    </p>
+  </blockquote>
+
+  <h4>Setting up the Pusher app</h4>
+
+  <p>We need to setup our Pusher app to allow us to authenticate users as well as send &amp; receive messages.</p>
+
+  <md-item>
+    <md-item-content>
+      <div class="md-tile-left">
+        <a ng-click="showPreview('https://pusher-geopusher.s3.amazonaws.com/pusher.gif')">
+          <img class="preview" src="/assets/images/gif-preview-pusher.png">
+        </a>
+      </div>
+      <div class="md-tile-content">
+        <ol>
+          <li>Sign up for a <a href="https://pusher.com/signup" target="_blank">free pusher account</a>.</li>
+          <li>Create a new app called <code>geopusher</code>, make sure to <b>enable client events</b>.</li>
+          <li>Make a note of your <b>APP ID</b>, <b>Key</b> &amp; <b>Secret</b></li>
+        </ol>
+      </div>
+    </md-item-content>
+  </md-item>
+
+  <h4>Setting up the Google developer project</h4>
+
+  <p>Google keep tight control over who used their API, we therefor need to get a key to use the Google Maps JavaScript API from the developer console.</p>
+
+  <md-item>
+    <md-item-content>
+      <div class="md-tile-left">
+        <a ng-click="showPreview('https://pusher-geopusher.s3-eu-west-1.amazonaws.com/google.gif')">
+          <img class="preview" src="/assets/images/gif-preview-google-api.png">
+        </a>
+      </div>
+      <div class="md-tile-content">
+        <ol>
+          <li>Go to <a href="https://console.developers.google.com" target="_blank">Google Developers Console</a> and sign in.</li>
+          <li>Create a new project called <code>geopusher</code>, and give it a unique project ID.</li>
+          <li>Click create and wait a few seconds whilst your project is created.</li>
+          <li>Go to API's &amp; auth > API's then Google Maps JavaScript API</li>
+          <li>Click Enable API</li>
+          <li>Go to API's &amp; auth > Credentials and then Create a new Key</li>
+          <li>Click Browser key and set the referrer to <code>localhost</code></li>
+          <li>Make a note of your <b>API Key</b></li>
+        </ol>
+      </div>
+    </md-item-content>
+  </md-item>
+
+  <h4>Setting up the environment file</h4>
+
+  <p>We use these keys in a few places and you should avoid committing them into source control. We'll add these keys into an environment file that gets referenced in various parts of the app.</p>
+
+  <ol>
+    <li>Copy the file <code>.env.example</code> to <code>.env</code></li>
+    <li>Edit the new <code>.env</code> file by populating the values with the ones you have taken notes of.</li>
+  </ol>
+
+  <h3>Adding Google Maps</h3>
+
+  <p>First of all we need to add Google Maps to our application. Google provide the JavaScript that we’ll need to include in the <code>&lt;head&gt;</code> of our site.</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/index.html
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="html">
+
+<script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}"></script>
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Don’t worry about changing the <code>GOOGLE_API_KEY</code> block this will get injected when we the page</p>
+
+  <p>We also need a container to render the map to.</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.html
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="html">
+
+<div id="map-canvas"></div>
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>We're going to initiate the map with the following options -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+var mapOptions = {
+  zoom: 14,
+  center: {
+    lat: 51.536208,
+    lng: -0.07873
+  }
+};
+
+var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Finally we want to make sure we’re using all of the available space in the browser window so we’ll set the following css –</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/index.scss
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="css">
+
+#map-canvas {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Now all we have to do is launch the server -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      Terminal
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="bash">
+
+$ gulp serve
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>This should automatically launch the browser and you should now see something like this -</p>
+
+  <img src="/assets/images/screenshots/01-google-maps.png">
+
+  <h3>Getting GeoLocation</h3>
+  <p>Next up we need to get the users location to do this we will use the GeoLocation API which is well supported across most devices and browsers. The <code>getCurrentPosition</code> method will provide us with the latitude and longitude which we’ll use to set the map location.</p>
+
+  <p>It sometime takes a few seconds to get the location so it's a good idea to let the user know something is happening in the meantime. To do this we'll use an alert which is shown on load and then will be hidden once the location is known.</p>
+
+  <p>Add this code to the end of the controller body -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+alert = $mdDialog.alert({
+  title: 'Getting your location',
+  content: 'You may need to allow GeoLocation. Hit accept at the top of your screen.'
+});
+
+$mdDialog.show(alert);
+
+navigator.geolocation.getCurrentPosition(function(position) {
+  $scope.position = position;
+  latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  map.setCenter(pos);
+  $mdDialog.hide();
+});
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Messages are only going to be available to people who are nearby. A simple way to do this is to use a channel name that contains the geolocation. This channel name should be the same for everybody nearby and is unique to the location. The latitude and longitude values are numbers so we can simply round these numbers to one decimal point, making the closest distance between two points about 11km.</p>
+
+  <p>Later on we’ll also want to show messages near to the actors location but for safety we should conceal their exact location. Since we need this functionality in two places we’ll abstract it into a method so we can use it for both, this will also give you the flexibility to adjust the distance to your preference.</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+$scope.getPositionToDegreeOfAccuracy = function(accuracy) {
+  return {
+    latitude: $scope.position.coords.latitude.toFixed(accuracy),
+    longitude: $scope.position.coords.longitude.toFixed(accuracy)
+  };
+};
+
+$scope.channelName = function() {
+  var position = $scope.getPositionToDegreeOfAccuracy(1);
+  return "" + position.latitude + position.longitude;
+};
+      </div>
+    </div>
+  </ng-switch>
+
+  <h3>Receiving events</h3>
+  <p>Next up we’re going to setup the functionality to receive events. Since the events are going to be coming from users instead of a server we’ll be using private channels. This requires us to authenticate users, which we’ll do with Express.js.</p>
+
+  <p>To start we’ll write the client side connection - </p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+var client = new Pusher("{{ PUSHER_APP_KEY }}", {
+authEndpoint: "{{ HOST_NAME }}/pusher/auth"
+});
+
+var pusher = $pusher(client);
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>On the server side we’ll keep things simple by unconditionally accepting clients.</p>
+
+  <p>Add the following route -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /server.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+app.post("/pusher/auth", function(req, res) {
+  var socketId = req.body.socket_id;
+  var channel = req.body.channel_name;
+  var auth = pusher.authenticate(socketId, channel);
+  res.send(auth);
+});
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Now launch the server -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      Terminal
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+node index.js
+      </div>
+    </div>
+  </ng-switch>
+
+
+  <p>Now we’re all setup to be able to receive events in the call to getCurrentPosition lets create a method called subscribeToLocalRoom and call it once the location is known.</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      Terminal
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+navigator.geolocation.getCurrentPosition(function(position){
+  // code from the last section
+  $scope.subscribeToLocalRoom();
+});
+
+$scope.subscribeToLocalRoom = function(){
+  // to do
+}
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>The subscribeToLocalRoom method is going to be handling incoming events and adding them to the map -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+$scope.subscribeToLocalRoom = function(){
+  $scope.channel = pusher.subscribe("private-location-" + $scope.roomName());
+
+  $scope.channel.bind("pusher:subscription_succeeded", function(){
+    $scope.state.pusherSubscription.active = true;
+  });
+
+  $scope.onMessage = function(data) {
+    var position = new google.maps.LatLng(data.position.latitude, data.position.longitude);
+    var infowindow = new google.maps.InfoWindow({
+      map: map,
+      position: position,
+      content: data.message
+    });
+  };
+
+  $scope.channel.bind("client-message-event", $scope.onMessage);
+};
+      </div>
+    </div>
+  </ng-switch>
+
+  <h3>Sending events</h3>
+
+  <p>All that’s left to do is to let users post up their messages, lets start out with the script -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.controller.js
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="javascript">
+
+$scope.message = {};
+
+$scope.shouldShowNewMessageForm = function() {
+  if ($scope.state.pusherSubscription.active) {
+    return false;
+  }
+  return true;
+};
+
+$scope.post = function() {
+  $scope.channel.trigger("client-message-event", {
+    message: $scope.message.body,
+    position: $scope.getPositionToDegreeOfAccuracy()
+  });
+};
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>Next we'll create the HTML form -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/main/main.html
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="html">
+
+<md-card class="form" ng-show="shouldShowNewMessageForm()">
+  <md-card-content>
+    <md-input-container flex>
+      <label>Message</label>
+      <textarea ng-model="message.body" columns="1" md-maxlength="150"></textarea>
+    </md-input-container>
+    <md-button class="align-right" ng-click="post()">Send</md-button>
+  </md-card-content>
+</md-card>
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>The very last thing to do is to position the form in the bottom right corner -</p>
+
+  <md-tabs class="md-accent" md-selected="data.selectedIndex">
+    <md-tab id="tab1" aria-controls="tab1-content">
+      /src/app/index.scss
+    </md-tab>
+  </md-tabs>
+  <ng-switch on="data.selectedIndex" class="tabpanel-container">
+    <div role="tabpanel" id="tab1-content" aria-labelledby="tab1" ng-switch-when="0" >
+      <div hljs language="css">
+
+.form {
+  background: #fff;
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 60%;
+  min-width: 600px;
+
+  @media all and (max-width: 670px) {
+    right: 0; bottom: 0; left: 0;
+    width: auto;
+    min-width: 0px;
+  }
+}
+      </div>
+    </div>
+  </ng-switch>
+
+  <p>If you've done everything right it should look something like this -</p>
+
+  <img src="/assets/images/screenshots/02-final.png">
+
+  <p>If your code isn't running correctly you can refer to the <a href="http://github.com/adambutler/geo-pusher">final code</a>.</p>
+
+  <h3>Conclusion</h3>
+  <p>Lets take a look back over what has been built here –</p>
+
+  <ul>
+    <li>First we bootstrapped out application with the configuration that we required to use Google Maps &amp; Pusher.</li>
+    <li>We then setup our user interface providing a simple but elegant single page view.</li>
+    <li>Using the geolocation API we requested the users location and set the map accordingly</li>
+    <li>We setup channels deriving their names from the location</li>
+    <li>We authenticated users to use private channels and subscribed them to the channel for their location.</li>
+    <li>Finally we allowed users to compose their own messages and post them to other people</li>
+  </ul>
+
+  <img src="/assets/images/map.png">
+
+  <p>The application works well but is quite limited right now here are some things that could make the application a little better –</p>
+
+
+  <h4>We only get the location once.</h4>
+  <p>To fix this you could instead use the watchPosition method instead of getCurrentPosition to give a better experience to mobile users.</p>
+
+  <h4>You can only see somebody else’s message.</h4>
+  <p>It would probably be a good idea if when you published a message it would come up in your own steam.</p>
+
+  <h4>The messages stay on the map.</h4>
+  <p>To keep the map clear it might be a good idea to remove the messages from the map after a few seconds, perhaps even make them bubbles that pop!</p>
+
+  <h4>There is no stream.</h4>
+  <p>You could push all of the messages into an array and then use angulars ng-repeat functionality to show a nice chat stream.</p>
+
+  </ul>
+
+  <hr>
+
+</div>
+
+
