@@ -505,7 +505,38 @@ $scope.post = function() {
   <p>If your code isn't running correctly you can refer to the <a href="http://github.com/adambutler/geo-pusher">final code</a>.</p>
 
   <h3>Conclusion</h3>
-  <p>To Do</p>
+  <p>Lets take a look back over what has been built here –</p>
+
+  <ul>
+    <li>First we bootstrapped out application with the configuration that we required to use Google Maps &amp; Pusher.</li>
+    <li>We then setup our user interface providing a simple but elegant single page view.</li>
+    <li>Using the geolocation API we requested the users location and set the map accordingly</li>
+    <li>We setup channels deriving their names from the location</li>
+    <li>We authenticated users to use private channels and subscribed them to the channel for their location.</li>
+    <li>Finally we allowed users to compose their own messages and post them to other people</li>
+  </ul>
+
+  <img src="/assets/images/map.png">
+
+  <p>The application works well but is quite limited right now here are some things that could make the application a little better –</p>
+
+
+  <h4>We only get the location once.</h4>
+  <p>To fix this you could instead use the watchPosition method instead of getCurrentPosition to give a better experience to mobile users.</p>
+
+  <h4>You can only see somebody else’s message.</h4>
+  <p>It would probably be a good idea if when you published a message it would come up in your own steam.</p>
+
+  <h4>The messages stay on the map.</h4>
+  <p>To keep the map clear it might be a good idea to remove the messages from the map after a few seconds, perhaps even make them bubbles that pop!</p>
+
+  <h4>There is no stream.</h4>
+  <p>You could push all of the messages into an array and then use angulars ng-repeat functionality to show a nice chat stream.</p>
+
+  </ul>
+
+  <hr>
+
 </div>
 
 
