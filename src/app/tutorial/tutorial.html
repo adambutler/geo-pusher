@@ -265,7 +265,7 @@ $mdDialog.show(alert);
 navigator.geolocation.getCurrentPosition(function(position) {
   $scope.position = position;
   latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-  map.setCenter(pos);
+  map.setCenter(latLng);
   $mdDialog.hide();
 });
       </div>
@@ -367,7 +367,7 @@ node index.js
 
   <md-tabs class="md-accent" md-selected="data.selectedIndex">
     <md-tab id="tab1" aria-controls="tab1-content">
-      Terminal
+      /src/app/main/main.controller.js
     </md-tab>
   </md-tabs>
   <ng-switch on="data.selectedIndex" class="tabpanel-container">
@@ -406,7 +406,7 @@ $scope.subscribeToLocalRoom = function(){
 
   $scope.onMessage = function(data) {
     var position = new google.maps.LatLng(data.position.latitude, data.position.longitude);
-    var infowindow = new google.maps.InfoWindow({
+    new google.maps.InfoWindow({
       map: map,
       position: position,
       content: data.message
@@ -435,10 +435,7 @@ $scope.subscribeToLocalRoom = function(){
 $scope.message = {};
 
 $scope.shouldShowNewMessageForm = function() {
-  if ($scope.state.pusherSubscription.active) {
-    return false;
-  }
-  return true;
+  return $scope.state.pusherSubscription.active
 };
 
 $scope.post = function() {
@@ -538,8 +535,6 @@ $scope.post = function() {
 
   <h4>There is no stream.</h4>
   <p>You could push all of the messages into an array and then use angulars ng-repeat functionality to show a nice chat stream.</p>
-
-  </ul>
 
   <hr>
 
